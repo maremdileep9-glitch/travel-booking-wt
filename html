@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Booking System</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+    }
+
+    header {
+      padding: 45px 20px;
+      text-align: center;
+      color: white;
+      background:
+        linear-gradient(rgba(2, 132, 199, 0.85),
+        rgba(15, 118, 110, 0.85)),
+        linear-gradient(135deg, #0284c7, #0f766e);
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: 36px;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 1200px;
+      margin: 30px auto;
+    }
+
+    .card {
+      padding: 25px;
+      margin-bottom: 25px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #075985;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      font-size: 15px;
+    }
+
+    button {
+      border: none;
+      color: white;
+      background: #0284c7;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #0369a1;
+    }
+
+    .danger {
+      background: #dc2626;
+    }
+
+    .danger:hover {
+      background: #b91c1c;
+    }
+
+    .secondary {
+      background: #475569;
+    }
+
+    .secondary:hover {
+      background: #334155;
+    }
+
+    .search-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .search-grid button {
+      height: 44px;
+    }
+
+    .package-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
+    }
+
+    .package-card {
+      overflow: hidden;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .package-image {
+      display: flex;
+      height: 160px;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 50px;
+      background: linear-gradient(135deg, #0ea5e9, #14b8a6);
+    }
+
+    .package-content {
+      padding: 20px;
+    }
+
+    .package-content h3 {
+      margin-top: 0;
+      color: #0369a1;
+    }
+
+    .package-content p {
+      line-height: 1.5;
+    }
+
+    .price {
+      color: #15803d;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .package-content button {
+      margin-top: 8px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .section-header button {
+      width: auto;
+    }
+
+    .booking-card {
+      padding: 20px;
+      margin-bottom: 15px;
+      border-left: 5px solid #0284c7;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+    }
+
+    .booking-card h3 {
+      margin-top: 0;
+      color: #075985;
+    }
+
+    .booking-card button {
+      width: auto;
+      margin-top: 8px;
+    }
+
+    .empty {
+      padding: 25px;
+      text-align: center;
+      background: white;
+      border-radius: 10px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.55);
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 25px;
+      background: white;
+      border-radius: 12px;
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .modal-buttons button {
+      flex: 1;
+    }
+
+    #message {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      display: none;
+      max-width: 320px;
+      padding: 15px 20px;
+      color: white;
+      background: #16a34a;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 850px) {
+      .search-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 28px;
+      }
+
+      .search-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .section-header button {
+        width: 100%;
+      }
+
+      .modal-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>TravelEase</h1>
+    <p>Explore destinations and book your perfect holiday</p>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Search Travel Packages</h2>
+
+      <div class="search-grid">
+        <input
+          type="text"
+          id="searchDestination"
+          placeholder="Search destination"
+        />
+
+        <select id="filterType">
+          <option value="">All trip types</option>
+          <option value="Beach">Beach</option>
+          <option value="Adventure">Adventure</option>
+          <option value="Cultural">Cultural</option>
+          <option value="Wildlife">Wildlife</option>
+        </select>
+
+        <select id="filterBudget">
+          <option value="">All budgets</option>
+          <option value="50000">Under ₹50,000</option>
+          <option value="100000">Under ₹1,00,000</option>
+        </select>
+
+        <button onclick="filterPackages()">Search</button>
+      </div>
+    </section>
+
+    <section>
+      <div id="packageList" class="package-list"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <h2>My Bookings</h2>
+
+        <button class="secondary" onclick="clearAllBookings()">
+          Clear All
+        </button>
+      </div>
+
+      <div id="bookingList"></div>
+    </section>
+  </main>
+
+  <div id="bookingModal" class="modal">
+    <div class="modal-content">
+      <h2>Book Your Trip</h2>
+
+      <p>
+        <strong>Selected package:</strong>
+        <span id="selectedPackage"></span>
+      </p>
+
+      <form id="bookingForm">
+        <input type="hidden" id="selectedPackageId" />
+
+        <div class="form-group">
+          <label for="travelerName">Full name</label>
+          <input
+            type="text"
+            id="travelerName"
+            placeholder="Enter your full name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="travelerEmail">Email address</label>
+          <input
+            type="email"
+            id="travelerEmail"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="travelerPhone">Phone number</label>
+          <input
+            type="tel"
+            id="travelerPhone"
+            placeholder="Enter your phone number"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="travelDate">Travel date</label>
+          <input type="date" id="travelDate" required />
+        </div>
+
+        <div class="form-group">
+          <label for="travelers">Number of travelers</label>
+          <input
+            type="number"
+            id="travelers"
+            min="1"
+            max="20"
+            value="1"
+            required
+          />
+        </div>
+
+        <div class="modal-buttons">
+          <button type="submit">Confirm Booking</button>
+
+          <button
+            type="button"
+            class="secondary"
+            onclick="closeBookingModal()"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="message"></div>
+
+  <script>
+    const packages = [
+      {
+        id: 1,
+        destination: "Goa, India",
+        type: "Beach",
+        duration: "4 Days / 3 Nights",
+        price: 28000,
+        rating: 4.8,
+        icon: "🏖️",
+        description:
+          "Relax on beautiful beaches and enjoy water sports."
+      },
+      {
+        id: 2,
+        destination: "Manali, India",
+        type: "Adventure",
+        duration: "5 Days / 4 Nights",
+        price: 42000,
+        rating: 4.7,
+        icon: "🏔️",
+        description:
+          "Experience mountain views, trekking, and adventure activities."
+      },
+      {
+        id: 3,
+        destination: "Jaipur, India",
+        type: "Cultural",
+        duration: "3 Days / 2 Nights",
+        price: 22000,
+        rating: 4.6,
+        icon: "🏰",
+        description:
+          "Explore forts, palaces, markets, and traditional cuisine."
+      },
+      {
+        id: 4,
+        destination: "Kerala, India",
+        type: "Cultural",
+        duration: "6 Days / 5 Nights",
+        price: 55000,
+        rating: 4.9,
+        icon: "🌴",
+        description:
+          "Enjoy backwaters, beaches, hill stations, and local culture."
+      },
+      {
+        id: 5,
+        destination: "Dubai, UAE",
+        type: "Adventure",
+        duration: "5 Days / 4 Nights",
+        price: 95000,
+        rating: 4.8,
+        icon: "🏙️",
+        description:
+          "Visit modern landmarks, deserts, shopping malls, and beaches."
+      },
+      {
+        id: 6,
+        destination: "Ranthambore, India",
+        type: "Wildlife",
+        duration: "3 Days / 2 Nights",
+        price: 36000,
+        rating: 4.5,
+        icon: "🐯",
+        description:
+          "Enjoy a wildlife safari and explore the national park."
+      }
+    ];
+
+    let bookings =
+      JSON.parse(localStorage.getItem("travelBookings")) || [];
+
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("travelDate").min = today;
+
+    function saveBookings() {
+      localStorage.setItem(
+        "travelBookings",
+        JSON.stringify(bookings)
+      );
+    }
+
+    function showMessage(message, success = true) {
+      const messageBox = document.getElementById("message");
+
+      messageBox.textContent = message;
+      messageBox.style.background =
+        success ? "#16a34a" : "#dc2626";
+      messageBox.style.display = "block";
+
+      setTimeout(() => {
+        messageBox.style.display = "none";
+      }, 3000);
+    }
+
+    function escapeHTML(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatCurrency(value) {
+      return "₹" + Number(value).toLocaleString("en-IN");
+    }
+
+    function displayPackages(packageData = packages) {
+      const packageList = document.getElementById("packageList");
+
+      packageList.innerHTML = "";
+
+      if (packageData.length === 0) {
+        packageList.innerHTML = `
+          <div class="empty">
+            <p>No travel packages found.</p>
+          </div>
+        `;
+        return;
+      }
+
+      packageData.forEach((travelPackage) => {
+        const card = document.createElement("div");
+        card.className = "package-card";
+
+        card.innerHTML = `
+          <div class="package-image">
+            ${travelPackage.icon}
+          </div>
+
+          <div class="package-content">
+            <h3>
+              ${escapeHTML(travelPackage.destination)}
+            </h3>
+
+            <p>
+              ${escapeHTML(travelPackage.description)}
+            </p>
+
+            <p>
+              <strong>Trip type:</strong>
+              ${escapeHTML(travelPackage.type)}
+            </p>
+
+            <p>
+              <strong>Duration:</strong>
+              ${escapeHTML(travelPackage.duration)}
+            </p>
+
+            <p>
+              <strong>Rating:</strong>
+              ⭐ ${travelPackage.rating}
+            </p>
+
+            <p class="price">
+              ${formatCurrency(travelPackage.price)}
+              per person
+            </p>
+
+            <button
+              onclick="openBookingModal(${travelPackage.id})"
+            >
+              Book Now
+            </button>
+          </div>
+        `;
+
+        packageList.appendChild(card);
+      });
+    }
+
+    function filterPackages() {
+      const searchText = document
+        .getElementById("searchDestination")
+        .value
+        .toLowerCase()
+        .trim();
+
+      const selectedType =
+        document.getElementById("filterType").value;
+
+      const selectedBudget =
+        document.getElementById("filterBudget").value;
+
+      const filteredPackages = packages.filter((travelPackage) => {
+        const matchesDestination =
+          travelPackage.destination
+            .toLowerCase()
+            .includes(searchText);
+
+        const matchesType =
+          selectedType === "" ||
+          travelPackage.type === selectedType;
+
+        const matchesBudget =
+          selectedBudget === "" ||
+          travelPackage.price <= Number(selectedBudget);
+
+        return (
+          matchesDestination &&
+          matchesType &&
+          matchesBudget
+        );
+      });
+
+      displayPackages(filteredPackages);
+    }
+
+    function openBookingModal(packageId) {
+      const selected = packages.find(
+        (travelPackage) => travelPackage.id === packageId
+      );
+
+      if (!selected) {
+        showMessage("Travel package not found", false);
+        return;
+      }
+
+      document.getElementById("selectedPackageId").value =
+        selected.id;
+
+      document.getElementById("selectedPackage").textContent =
+        selected.destination +
+        " - " +
+        formatCurrency(selected.price);
+
+      document.getElementById("bookingModal").style.display =
+        "flex";
+    }
+
+    function closeBookingModal() {
+      document.getElementById("bookingModal").style.display =
+        "none";
+
+      document.getElementById("bookingForm").reset();
+    }
+
+    document
+      .getElementById("bookingForm")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const packageId = Number(
+          document.getElementById("selectedPackageId").value
+        );
+
+        const selected = packages.find(
+          (travelPackage) => travelPackage.id === packageId
+        );
+
+        const travelerName = document
+          .getElementById("travelerName")
+          .value.trim();
+
+        const travelerEmail = document
+          .getElementById("travelerEmail")
+          .value.trim();
+
+        const travelerPhone = document
+          .getElementById("travelerPhone")
+          .value.trim();
+
+        const travelDate =
+          document.getElementById("travelDate").value;
+
+        const travelers = Number(
+          document.getElementById("travelers").value
+        );
+
+        const totalAmount = selected.price * travelers;
+
+        const newBooking = {
+          id: "TB" + Date.now(),
+          packageId: selected.id,
+          destination: selected.destination,
+          duration: selected.duration,
+          travelerName,
+          travelerEmail,
+          travelerPhone,
+          travelDate,
+          travelers,
+          totalAmount,
+          status: "Confirmed"
+        };
+
+        bookings.push(newBooking);
+        saveBookings();
+        displayBookings();
+        closeBookingModal();
+
+        showMessage(
+          "Booking confirmed. Booking ID: " + newBooking.id
+        );
+      });
+
+    function displayBookings() {
+      const bookingList =
+        document.getElementById("bookingList");
+
+      bookingList.innerHTML = "";
+
+      if (bookings.length === 0) {
+        bookingList.innerHTML = `
+          <div class="empty">
+            <p>No bookings found.</p>
+          </div>
+        `;
+        return;
+      }
+
+      bookings
+        .slice()
+        .reverse()
+        .forEach((booking) => {
+          const card = document.createElement("div");
+          card.className = "booking-card";
+
+          card.innerHTML = `
+            <h3>${escapeHTML(booking.destination)}</h3>
+
+            <p>
+              <strong>Booking ID:</strong>
+              ${escapeHTML(booking.id)}
+            </p>
+
+            <p>
+              <strong>Traveler:</strong>
+              ${escapeHTML(booking.travelerName)}
+            </p>
+
+            <p>
+              <strong>Email:</strong>
+              ${escapeHTML(booking.travelerEmail)}
+            </p>
+
+            <p>
+              <strong>Phone:</strong>
+              ${escapeHTML(booking.travelerPhone)}
+            </p>
+
+            <p>
+              <strong>Travel date:</strong>
+              ${escapeHTML(booking.travelDate)}
+            </p>
+
+            <p>
+              <strong>Travelers:</strong>
+              ${booking.travelers}
+            </p>
+
+            <p>
+              <strong>Total amount:</strong>
+              ${formatCurrency(booking.totalAmount)}
+            </p>
+
+            <p>
+              <strong>Status:</strong>
+              ${escapeHTML(booking.status)}
+            </p>
+
+            <button
+              class="danger"
+              onclick="cancelBooking('${booking.id}')"
+            >
+              Cancel Booking
+            </button>
+          `;
+
+          bookingList.appendChild(card);
+        });
+    }
+
+    function cancelBooking(bookingId) {
+      const confirmed = confirm(
+        "Are you sure you want to cancel this booking?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      bookings = bookings.filter(
+        (booking) => booking.id !== bookingId
+      );
+
+      saveBookings();
+      displayBookings();
+
+      showMessage("Booking cancelled successfully");
+    }
+
+    function clearAllBookings() {
+      if (bookings.length === 0) {
+        showMessage("There are no bookings to clear", false);
+        return;
+      }
+
+      const confirmed = confirm(
+        "Are you sure you want to delete all bookings?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      bookings = [];
+      saveBookings();
+      displayBookings();
+
+      showMessage("All bookings deleted");
+    }
+
+    displayPackages();
+    displayBookings();
+  </script>
+</body>
+</html>
